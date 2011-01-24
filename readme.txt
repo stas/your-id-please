@@ -11,6 +11,7 @@ Ask your visitors to login if the post is marked as visible only to registered u
 == Description ==
 
 This plugin will add a new meta box to your posts and pages allowing you to mark posts that require users to login. Visitors trying to view the post, will be asked to login.
+[See a screenshot](http://i.imgur.com/ghvTt.png)
 
 
 == Installation ==
