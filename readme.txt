@@ -1,6 +1,6 @@
-=== Please Login ===
+=== Simple Content Restriction ===
 Contributors: sushkov
-Tags: login, required, users, protect, content
+Tags: restrict, content, login, required, users, protect
 Requires at least: WordPress 2.9
 Tested up to: WordPress 3.0.4
 Stable tag: 0.1
@@ -20,7 +20,7 @@ Please follow the [standard installation procedure for WordPress plugins](http:/
 
 == Frequently Asked Questions ==
 
-Please report bugs on [plugin page issues tracker](https://github.com/stas/please-login/issues).
+Please report bugs on [plugin page issues tracker](https://github.com/stas/your-id-please/issues).
 
 
 == Changelog ==

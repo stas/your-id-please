@@ -1,7 +1,7 @@
 <?php
 /*
-Plugin Name: Please Login
-Plugin URI: https://github.com/stas/please-login
+Plugin Name: Simple Content Restriction
+Plugin URI: https://github.com/stas/your-id-please
 Description: Asks visitors to login if the post is marked as visible only to blog users.
 Version: 0.1
 Author: Stas Sușcov
@@ -28,87 +28,85 @@ Author URI: http://stas.nerd.ro/
 ?>
 <?php
 
-define( 'PLEASE_LOGIN', '0.1' );
-
 /**
- * pl_textdomain()
+ * yidp_textdomain()
  *
  * Loads 
  */
-function pl_textdomain() {
-    load_plugin_textdomain( 'please_login', false, dirname( plugin_basename( __FILE__ ) ).'/languages' );
+function yidp_textdomain() {
+    load_plugin_textdomain( 'your-id-please', false, dirname( plugin_basename( __FILE__ ) ).'/languages' );
 }
 
 /**
- * pl_content( $content )
+ * yidp_content( $content )
  *
  * Hides the content of posts/pages if admin marked pages with login required
  * @param String $content, the page/post content
  * @return String
  */
-function pl_content( $content ) {
+function yidp_content( $content ) {
     global $post;
-    $pl_enabled = get_post_meta( $post->ID, 'please_login', true );
-    $pl_message = false;
+    $yidp_enabled = get_post_meta( $post->ID, 'your-id-please', true );
+    $yidp_message = false;
     
-    if( $pl_enabled )
-        $pl_message = get_post_meta( $post->ID, 'please_login_message', true );
+    if( $yidp_enabled )
+        $yidp_message = get_post_meta( $post->ID, 'your-id-please_message', true );
     
-    if( $pl_message && !is_user_logged_in() )
-        return '<p><a href="' . wp_login_url( get_permalink() ) .'">' . $pl_message. '</p>';
+    if( $yidp_message && !is_user_logged_in() )
+        return '<p><a href="' . wp_login_url( get_permalink() ) .'">' . $yidp_message. '</p>';
     else
         return $content;
 }
 
 /**
- * pl_settings()
+ * yidp_settings()
  *
  * Adds metaboxes to post and page editor screens
  */
-function pl_settings() {
-    add_meta_box( 'please_login', __( 'Content Visibility', 'please_login' ), 'pl_box', 'post', 'side' );
-    add_meta_box( 'please_login', __( 'Content Visibility', 'please_login' ), 'pl_box', 'page', 'side' );
+function yidp_settings() {
+    add_meta_box( 'your-id-please', __( 'Content Visibility', 'your-id-please' ), 'yidp_box', 'post', 'side' );
+    add_meta_box( 'your-id-please', __( 'Content Visibility', 'your-id-please' ), 'yidp_box', 'page', 'side' );
     
-    if( !get_option( 'pl_message' ) )
-        add_option( 'pl_message', __( 'Please login to access this post/page content', 'please_login' ), null, true );
+    if( !get_option( 'your-id-please_message' ) )
+        add_option( 'your-id-please_message', __( 'Please login to access this post/page content', 'your-id-please' ), null, true );
 }
 
 /**
- * pl_box()
+ * yidp_box()
  *
  * Renders the metabox content
  * @param Obj $post, the page/post object
  */
-function pl_box( $post ) {
-    $pl_enabled = (bool) get_post_meta( $post->ID, 'please_login', true );
-    $pl_message = get_post_meta( $post->ID, 'please_login_message', true );
-    $pl_message = empty( $pl_message ) ? get_option( 'pl_message' ) : $pl_message;
+function yidp_box( $post ) {
+    $yidp_enabled = (bool) get_post_meta( $post->ID, 'your-id-please', true );
+    $yidp_message = get_post_meta( $post->ID, 'your-id-please_message', true );
+    $yidp_message = empty( $yidp_message ) ? get_option( 'your-id-please_message' ) : $yidp_message;
     
-    wp_nonce_field( 'please_login', 'please_login' );
+    wp_nonce_field( 'your-id-please', 'your-id-please' );
     
-    $toggler = $pl_enabled ? '' : 'onclick="javascript:jQuery(\'.pl_toggle\').toggle();"';
-    $toggler_css = $pl_enabled ? '' : 'style="display: none;"';
+    $toggler = $yidp_enabled ? '' : 'onclick="javascript:jQuery(\'.yidp_toggle\').toggle();"';
+    $toggler_css = $yidp_enabled ? '' : 'style="display: none;"';
     
     echo '<p>';
-        echo '<label for="pl_enabled">' . __("Hide content to visitors", 'please_login' ) . '</label>';
-        echo '<input type="checkbox" id="pl_enabled" name="pl_enabled"' . checked( $pl_enabled, 1, false ) . $toggler . ' />';
+        echo '<label for="yidp_enabled">' . __("Hide content to visitors", 'your-id-please' ) . '</label>';
+        echo '<input type="checkbox" id="yidp_enabled" name="yidp_enabled"' . checked( $yidp_enabled, 1, false ) . $toggler . ' />';
     echo '</p>';
     
-    echo '<p class="pl_toggle form-field" ' . $toggler_css . '>';
-        echo '<label for="pl_message" >' . __("Show this message", 'please_login' ) . '</label>';
-        echo '<input type="text" id="pl_message" name="pl_message" class="long-text" value="' . $pl_message . '" />';
+    echo '<p class="yidp_toggle form-field" ' . $toggler_css . '>';
+        echo '<label for="yidp_message" >' . __("Show this message", 'your-id-please' ) . '</label>';
+        echo '<input type="text" id="yidp_message" name="yidp_message" class="long-text" value="' . $yidp_message . '" />';
     echo '</p>';
 }
 
 /**
- * pl_setting_save( $post_id )
+ * yidp_setting_save( $post_id )
  *
  * This will process and save options for current post/page
  * @param Int $post_id, post/page ID
  * @return Int $post_id
  */
-function pl_setting_save( $post_id ) {
-    if ( !wp_verify_nonce( $_POST['please_login'], 'please_login') )
+function yidp_setting_save( $post_id ) {
+    if ( !wp_verify_nonce( $_POST['your-id-please'], 'your-id-please') )
         return $post_id;
     
     if ( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE ) 
@@ -121,25 +119,25 @@ function pl_setting_save( $post_id ) {
         if ( !current_user_can( 'edit_post', $post_id ) )
             return $post_id;
     
-    if( isset( $_POST['pl_enabled'] ) )
-        $pl_enabled = ( 'on' == $_POST['pl_enabled'] ) ? 1 : 0;
+    if( isset( $_POST['yidp_enabled'] ) )
+        $yidp_enabled = ( 'on' == $_POST['yidp_enabled'] ) ? 1 : 0;
     
-    if( isset( $_POST['pl_message'] ) && !empty( $_POST['pl_message'] ) )
-        $pl_message = sanitize_text_field( $_POST['pl_message'] );
+    if( isset( $_POST['yidp_message'] ) && !empty( $_POST['yidp_message'] ) )
+        $yidp_message = sanitize_text_field( $_POST['yidp_message'] );
     
-    if( isset( $pl_enabled ) )
-        update_post_meta( $post_id, 'please_login', $pl_enabled );
+    if( isset( $yidp_enabled ) )
+        update_post_meta( $post_id, 'your-id-please', $yidp_enabled );
     else
-        delete_post_meta( $post_id, 'please_login' );
+        delete_post_meta( $post_id, 'your-id-please' );
     
-    if( isset( $pl_message ) )
-        update_post_meta( $post_id, 'please_login_message', $pl_message );
+    if( isset( $yidp_message ) )
+        update_post_meta( $post_id, 'your-id-please_message', $yidp_message );
     
     return $post_id;
 }
 
-add_filter( 'the_content', 'pl_content' );
-add_action( 'admin_init', 'pl_settings' );
-add_action( 'save_post', 'pl_setting_save');
-add_action( 'admin_init', 'pl_textdomain'); // We need localization only there!
+add_filter( 'the_content', 'yidp_content' );
+add_action( 'admin_init', 'yidp_settings' );
+add_action( 'save_post', 'yidp_setting_save');
+add_action( 'admin_init', 'yidp_textdomain'); // We need localization only there!
 ?>
